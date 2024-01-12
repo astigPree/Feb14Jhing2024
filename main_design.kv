@@ -1,0 +1,109 @@
+#:import chex kivy.utils.get_color_from_hex
+#:import BackgroundColorBehavior kivymd.uix.behaviors.BackgroundColorBehavior
+#:import Clock kivy.clock.Clock
+
+MainWindow :
+	canvas.before:
+		Color:
+			rgba : chex("#F48FB1")
+		Rectangle:
+			pos: self.pos
+			size: self.size
+	
+
+# ---------------------------> Envelope
+<ShowEnvelopeScreen>:
+	envelope_box : envelope_box
+	header : header
+	footer : footer
+	content_holder : content_holder
+	content_layout : content_layout
+	
+	FloatLayout:
+		
+		EnvelopeBox:
+			id : envelope_box
+			
+			size_hint : 0.9 , 0.25
+			pos_hint : { "center_x" : 0.5 , "center_y" : 0.5 }
+			
+			
+			MDLabel :
+				id : header
+				size_hint : 1 , None
+				height : root.height * 0.125
+				text : "  Dear Jhing"
+				font_name : "title_font"
+				font_size : min(root.size) * 0.1
+			
+			ScrollView:
+				size_hint : 1 , None
+				height : self.parent.height - header.height - footer.height
+				
+				MDGridLayout:
+					id : content_layout
+					adaptive_height : True
+					cols : 1
+					padding : [ dp(15), dp(0) , dp(15), dp(10)]
+					spacing : dp(20)
+					
+					EnvelopeContentLabel:
+						id : content_holder 
+						font_size : min(root.size) * 0.05
+			
+			MDBoxLayout :
+				id : footer
+				size_hint : 1 , None
+				height : root.height * 0.125
+				
+				Widget :
+					size_hint : 0.15 , 1
+				MDFillRoundFlatIconButton:
+					size_hint : 0.7 , 0.5
+					pos_hint : { "center_x" : 0.5 , "center_y" : 0.5 }
+					icon : "email" if not root.isOpen else "email-open"
+					text : "click here to open" if not root.isOpen else "read the envelope"
+					font_name : "content_font"
+					md_bg_color : chex("#F50057")
+					font_size : min(root.size) * 0.05
+					disabled : root.isOpen
+					
+					on_release:
+						Clock.schedule_once( lambda x : root.animate(), 0.5 )
+				Widget :
+					size_hint : 0.15 , 1
+				
+# ---------------------------> Envelope Additional Design				
+<EnvelopeBox>:
+    elevation: 6
+    shadow_softness : 12
+    #shadow_offset: 0, 6
+    md_bg_color : chex("#EDEDED")
+    #height : root.height * 0.25
+	orientation : "vertical"
+	shadow_softness_size : 5
+		
+<EnvelopeContentLabel@Label>:
+	size_hint : 1 , None
+	text_size: self.width, None
+	height: self.texture_size[1]
+	color : "black"
+	font_name : "content_font"
+	
+<EnvelopeExitButton>:
+	opacity : 0
+	size_hint : 1 , None
+	height : dp(100)
+	
+	MDFillRoundFlatIconButton:
+		size_hint : 0.7 , 0.5
+		pos_hint : { "center_x" : 0.5 , "center_y" : 0.5 }
+		icon : "page-next"
+		text : "click here to change screen"
+		font_name : "content_font"
+		md_bg_color : chex("#F50057")
+		font_size : min(root.size) * 0.2
+			
+		on_release:
+			root.command
+		
