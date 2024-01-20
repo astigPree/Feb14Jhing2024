@@ -1,6 +1,7 @@
 #:import chex kivy.utils.get_color_from_hex
 #:import BackgroundColorBehavior kivymd.uix.behaviors.BackgroundColorBehavior
 #:import Clock kivy.clock.Clock
+#:import ScreensTransition kivy.uix.screenmanager.FadeTransition
 
 MainWindow :
 	canvas.before:
@@ -9,6 +10,7 @@ MainWindow :
 		Rectangle:
 			pos: self.pos
 			size: self.size
+	transition : ScreensTransition(clearcolor = (0,0,0,0))
 	
 
 # ---------------------------> Envelope
@@ -105,5 +107,283 @@ MainWindow :
 		font_size : min(root.size) * 0.2
 			
 		on_release:
-			root.command
+			root.command() if self.opacity else None
+
+
+# ---------------------------> I Love You
+
+<ShowILoveYouScreen>:
+	
+	iloveyoubox : iloveyoubox
+	
+	FloatLayout:
 		
+		ILoveYouExitButton:
+			size_hint : 0.8 , 0.07
+			pos_hint : { "center_x" : 0.5 , "y" : 0.02 }
+			
+		MDBoxLayout:
+			id : cover
+			md_bg_color : chex("#F48FB1")
+			size_hint : 0.8 , 0.07
+			pos_hint : { "center_x" : 0.5 , "y" : 0.02 }
+			opacity : 1
+		
+		ILoveYouBox:
+			id : iloveyoubox
+			orientation : "vertical"
+			size_hint : 0.9 , 0.5
+			pos_hint : { "center_x" : 0.5 , "center_y" : 0.5 }
+			
+			
+			Label :
+				id : header
+				size_hint : 1 , None
+				height : root.height * 0.25
+				text : "I"
+				color : "black"
+				font_name : "content_font"
+				font_size : min(root.size) * 0.5
+				opacity : 0
+			
+			BoxLayout:
+				size_hint :1 , None
+				height : iloveyoubox.height - footer.height - header.height
+			
+				Image:
+					size_hint : 1 , None
+					height : self.parent.height
+					allow_stretch : True
+					keep_ratio : True
+					source : "Pictures/heart.png"
+		
+			Label :
+				id : footer
+				size_hint : 1 , None
+				height : root.height * 0.25
+				text : "U"
+				color : "black"
+				font_name : "content_font"
+				font_size : min(root.size) * 0.5
+				opacity : 0
+
+# ---------------------------> I Love You Additional Design
+<ILoveYouExitButton>:
+	opacity : 1
+	
+	MDFillRoundFlatIconButton:
+		size_hint : 1 , 1
+		icon : "page-next"
+		text : "click here to change screen"
+		font_name : "content_font"
+		md_bg_color : chex("#F50057")
+		font_size : min(root.size) * 0.35
+			
+		on_release:
+			root.command() if root.isOkeyToNext else None
+
+			
+# ---------------------------> Love Sound
+<ShowLoveSoundScreen>:
+	
+	lyrics_holder : lyrics_holder
+	content_holder : content_holder
+	
+	FloatLayout:
+		
+		LyricsContainer:
+			size_hint : 0.95 , 0.6
+			pos_hint : { "center_x" : 0.5 , "top" : 0.95 }
+			
+			ScrollView:
+				size_hint : 1 , 1
+				
+				MDGridLayout:
+					id : content_holder
+					adaptive_height : True
+					cols : 1
+					padding : [ dp(15), dp(0) , dp(15), dp(10)]
+					spacing : dp(20)
+					
+					LyricsContentLabel:
+						id : lyrics_holder
+					
+		
+
+# ---------------------------> I Love You Additional Design
+<LyricsContainer>:
+	elevation: 6
+    shadow_softness : 12
+    #shadow_offset: 0, 6
+    md_bg_color : chex("#EDEDED")
+    #height : root.height * 0.25
+	orientation : "vertical"
+	shadow_softness_size : 5
+
+<LyricsContentLabel@Label>:
+	size_hint : 1 , None
+	text_size: self.width, None
+	height: self.texture_size[1]
+	color : "black"
+	font_name : "content_font"
+
+
+# ---------------------------> Year Timer
+<ShowTimerYearScreen>:
+	
+	numer_3 : numer_3
+	numer_4 : numer_4
+	with_you : with_you
+	labyu : labyu
+	
+	FloatLayout:
+		size_hint : 1 , 1
+		
+		
+		BoxLayout:
+			size_hint : 1 , 1
+			orientation: "vertical"
+			
+			TimerYearNumberLabel:
+				text : "2"
+			
+			TimerYearNumberLabel:
+				text : "0"
+			
+			TimerYearNumberLabel:
+				text : "2"
+			
+			FloatLayout:
+				
+				TimerYearNumberLabel:
+					id : numer_3
+					text : "3"
+					size_hint : 0.5 , 1
+					pos_hint : { "center_y" : 0.5 , "center_x" : 0.5 }
+				
+				TimerYearNumberLabel:
+					id : numer_4
+					opacity : 0
+					text : "4"
+					size_hint : 0.5 , 1
+					pos_hint : { "center_y" : 0.5 , "center_x" : 1.5 }
+			
+			
+		TimerYearStillCountingLabel:
+			id : with_you
+			size_hint : 0.08 , 1
+			pos_hint : { "top" : 0.0 , "right" : 0.95 }
+			text : "S\nt\ni\nl\nl\n\nC\no\nu\nt\ni\nn\ng\n\nW\ni\nt\nh\n\nY\no\nu"
+		
+		TimerYearNumberLabel:
+			id : labyu
+			opacity : 0
+			size_hint : 0.2 , 0.13
+			pos_hint : { "x" : 0.1 , "y" : 0.05 }
+			text : "I Love You\nJhing"
+			font_size : min(self.size) * 0.3
+			
+		
+# ---------------------------> Year Timer Additional Design
+<TimerYearNumberLabel@Label>:
+	color : "black"
+	font_name : "content_font"
+	font_size : min(self.size) * 0.9
+	halign : "center"
+
+<TimerYearStillCountingLabel@Label>:
+	color : "black"
+	font_name : "title_font"
+	font_size : min(self.size) * 0.75
+
+
+# ---------------------------> Pop Up Image Screen
+<ShowPopUpImageScreen>:
+	
+	f_pic : f_pic
+	s_pic : s_pic
+	t_pic : t_pic
+	
+	f1 : f1
+	f2 : f2
+	f3 : f3
+	f4 : f4
+	
+	FloatLayout:
+		
+		
+		PopUpImageOurPicture:
+			id : f_pic
+			size_hint : 0.6 , 0.2
+			pos_hint : { "center_x" : 0.38 , "center_y" : 0.25 }
+		
+		PopUpImageOurPicture:
+			id : s_pic
+			size_hint : 0.6 , 0.2
+			pos_hint : { "center_x" : 0.63 , "center_y" : 0.49 }
+		
+		PopUpImageOurPicture:
+			id : t_pic
+			size_hint : 0.6 , 0.2
+			pos_hint : { "center_x" : 0.38 , "center_y" : 0.76 }
+		
+		
+		PopUpImageRedFlower:
+			id : f1
+			size_hint : 0.4 , 0.2
+			pos_hint : { "center_x" : 0.1 , "center_y" : 0.13 }
+		
+		PopUpImageRedFlower:
+			id : f2
+			size_hint : 0.5 , 0.25
+			pos_hint : { "center_x" : 0.68 , "center_y" : 0.34 }
+		
+		PopUpImageRedFlower:
+			id : f3
+			size_hint : 0.6 , 0.3
+			pos_hint : { "center_x" : 0.38 , "center_y" : 0.6 }
+		
+		PopUpImageRedFlower:
+			id : f4
+			size_hint : 0.8 , 0.4
+			pos_hint : { "center_x" : 0.74 , "center_y" : 0.87 }
+
+# ---------------------------> Pop Up Image Additional Design
+<PopUpImageOurPicture>:
+	elevation: 6
+    shadow_softness : 12
+    #shadow_offset: 0, 6
+    md_bg_color : chex("#EDEDED")
+    #height : root.height * 0.25
+	orientation : "vertical"
+	shadow_softness_size : 5
+	padding : dp(5)
+	radius : (24, )
+	opacity : 0
+	
+	my_image : my_image
+	
+	Image:
+		id : my_image
+		size_hint : 1 , 1 
+		allow_stretch : True
+		keep_ratio : False
+	
+
+<PopUpImageRedFlower>:
+	source : "Pictures/flower.png"
+	
+	canvas.before:
+#		Color:
+#			rgba : 1,1,1,1
+#		Rectangle:
+#			pos : self.pos
+#			size : self.size
+		PushMatrix
+		Rotate:
+			angle : self.currentAngle
+			origin : self.center
+	canvas.after:
+		PopMatrix
+	
+
