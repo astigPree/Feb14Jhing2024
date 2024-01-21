@@ -11,7 +11,15 @@ MainWindow :
 			pos: self.pos
 			size: self.size
 	transition : ScreensTransition(clearcolor = (0,0,0,0))
+
+
+<CartonnyButton>:
+	source : "Pictures/arrow.png"
+	allow_stretch : True
+	keep_ratio : False
 	
+	on_release:
+		print("ARROW")
 
 # ---------------------------> Envelope
 <ShowEnvelopeScreen>:
@@ -273,7 +281,7 @@ MainWindow :
 			id : with_you
 			size_hint : 0.08 , 1
 			pos_hint : { "top" : 0.0 , "right" : 0.95 }
-			text : "S\nt\ni\nl\nl\n\nC\no\nu\nt\ni\nn\ng\n\nW\ni\nt\nh\n\nY\no\nu"
+			text : "s\nt\ni\nl\nl\n\nc\no\nu\nt\ni\nn\ng\n\nw\ni\nt\nh\n\ny\no\nu"
 		
 		TimerYearNumberLabel:
 			id : labyu
@@ -293,8 +301,8 @@ MainWindow :
 
 <TimerYearStillCountingLabel@Label>:
 	color : "black"
-	font_name : "title_font"
-	font_size : min(self.size) * 0.75
+	font_name : "reg_font"
+	font_size : min(self.size) * 0.58
 
 
 # ---------------------------> Pop Up Image Screen
@@ -347,6 +355,16 @@ MainWindow :
 			id : f4
 			size_hint : 0.8 , 0.4
 			pos_hint : { "center_x" : 0.74 , "center_y" : 0.87 }
+		
+		CartonnyButton:
+			size_hint : 0.2 , 0.1
+			pos_hint : { "right" : 0.99 , "y" : 0.01 }
+			disabled : not root.isDoneAllActivities
+			opacity : 1 if root.isDoneAllActivities else 0
+			
+			on_release:
+				root.command()
+		
 
 # ---------------------------> Pop Up Image Additional Design
 <PopUpImageOurPicture>:
@@ -385,5 +403,89 @@ MainWindow :
 			origin : self.center
 	canvas.after:
 		PopMatrix
+
+		
+# ---------------------------> Pop Up Image Screen
+<ShowProposeScreen>:
 	
+	hand : hand
+	info : info
+	yes_button : yes_button
+	no_button : no_button
+	result : result
+	
+	
+	FloatLayout:
+		
+		
+		Image:
+			id : hand
+			source : "Pictures/hand.png"
+			size_hint : 0.64 , 0.2
+			pos_hint : { "center_x" : 0.5 , "center_y" : 0.45 }
+			keep_ratio : False
+			allow_stretch : True
+		
+		Label:
+			id : info
+			size_hint : 0.6 , 0.1
+			pos_hint : { "center_x" : 0.5 , "center_y" : 0.26 }
+			font_name : "reg_font"
+			font_size : min(self.size) * 0.3
+			text : "will you stay with me?\nYes or No"
+			color : "black"
+			halign : "center"
+		
+		PruposeAnswerButton:
+			id : yes_button
+			source : "Pictures/answer.png"
+			pos_hint : { "center_x" : 0.39 , "center_y" : 0.6 }
+			size_hint : 0.2 , 0.1
+			
+			on_release:
+				root.actionIfYes()
+		
+		PruposeAnswerButton:
+			id : no_button
+			source : "Pictures/answer no.png"
+			pos_hint : { "center_x" : 0.7 , "center_y" : 0.6 }
+			size_hint : 0.2 , 0.1
+			
+			on_release:
+				root.moveIfNo()
+		
+		Image:
+			id : result
+			source : "Pictures/labyu jhing.png"
+			pos_hint : { "center_x" : 0.5 , "center_y" : 0.65 }
+			size_hint : 0.0 , 0.0
+			keep_ratio : False
+			allow_stretch : True
+			opacity : 0
+		
+		CartonnyButton:
+			size_hint : 0.2 , 0.1
+			pos_hint : { "right" : 0.99 , "y" : 0.01 }
+			disabled : not root.isDoneAllActivities
+			opacity : 1 if root.isDoneAllActivities else 0
+			
+			on_release:
+				root.command()
+
+# ---------------------------> Pop Up Image Additional Design
+<PruposeAnswerButton>:
+	size_hint : 0.2 , 0.1
+	allow_stretch : True
+	keep_ratio : False
+
+
+
+# ---------------------------> Flowering Picture Screen
+<ShowFloweringPictureScreen>:
+	
+	FloatLayout :
+
+
+# ---------------------------> Flowering Picture Screen Additional Design
+
 

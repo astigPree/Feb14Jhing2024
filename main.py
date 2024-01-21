@@ -6,6 +6,7 @@ from kivy.uix.widget import Widget
 from kivymd.uix.behaviors import BackgroundColorBehavior, CommonElevationBehavior
 from kivy.uix.label import Label
 from kivy.uix.image import Image
+from kivy.uix.behaviors import ButtonBehavior
 
 from kivy.properties import ListProperty, DictProperty, NumericProperty, ObjectProperty, BooleanProperty, StringProperty
 from kivy.animation import Animation
@@ -19,7 +20,72 @@ import random
 
 import variables as data
 
-# ======= Timer Year Screen Activities
+# ======= Flowering Picture Screen Activities
+class ShowFloweringPictureScreen(Screen):
+	pass
+
+
+# ======= Prupose Screen Activities
+class PruposeAnswerButton(ButtonBehavior, Image):
+	pass
+
+class ShowProposeScreen(Screen):
+	hand : Image = ObjectProperty()
+	info : Label = ObjectProperty()
+	yes_button : PruposeAnswerButton = ObjectProperty()
+	no_button : PruposeAnswerButton = ObjectProperty()
+	result : Image = ObjectProperty()
+	
+	isDoneAllActivities : bool = BooleanProperty(False)
+	isMoveUp = False
+	delay = 0.5
+	
+	location = ( (0.2 , 0.2) , (0.2 , 0.8) , (0.8 , 0.8) , (0.7 , 0.6) )
+	
+	anim = Animation(opacity = 0, duration = 1 , size_hint =(0,0))
+	
+	def actionIfYes(self):
+		self.yes_button.disabled = True
+		self.no_button.disabled = True
+		
+		self.anim.start(self.yes_button)
+		self.anim.start(self.no_button)
+		self.anim.start(self.info)
+		
+		def done(*_):
+			self.isDoneAllActivities = True
+			
+		anim = Animation(opacity = 1 , size_hint = (0.8 , 0.4), duration = 3 )
+		anim.start(self.result)
+		anim.bind(on_complete = done )
+	
+	def moveIfNo(self):
+		past_loc = ( self.no_button.pos_hint["center_x"], self.no_button.pos_hint["center_y"])
+		while True:
+			new_loc = self.location[random.randint(0 , len(self.location) - 1)]
+			
+			if new_loc != past_loc:
+				break
+			
+		self.no_button.pos_hint = { "center_x" : new_loc[0] , "center_y" : new_loc[1] }
+	
+	def animateMovement(self , _):
+		if self.isMoveUp:
+			self.hand.pos_hint = {  "center_x" : 0.5 , "center_y" : self.hand.pos_hint["center_y"] + 0.01 }
+			self.yes_button.pos_hint = {   "center_x" : 0.39,  "center_y" : self.yes_button.pos_hint["center_y"] + 0.01 }
+			self.isMoveUp = False
+		else:
+			self.hand.pos_hint = {  "center_x" : 0.5 , "center_y" : self.hand.pos_hint["center_y"] - 0.01 }
+			self.yes_button.pos_hint = {   "center_x" : 0.39,  "center_y" : self.yes_button.pos_hint["center_y"] - 0.01 }
+			self.isMoveUp = True
+		
+		Clock.schedule_once(self.animateMovement , self.delay)
+	
+	def on_enter(self , *args):
+		Clock.schedule_once(self.animateMovement , self.delay)
+		
+
+# ======= Pop Up Image Screen Activities
 class PopUpImageOurPicture(MDBoxLayout,CommonElevationBehavior,BackgroundColorBehavior):
 	my_image : Image = ObjectProperty(None)
 	
@@ -46,7 +112,6 @@ class PopUpImageRedFlower(Image):
 		
 		self.currentAngle -= num
 		
-		
 
 class ShowPopUpImageScreen(Screen):
 	f_pic : PopUpImageOurPicture = ObjectProperty()
@@ -65,6 +130,8 @@ class ShowPopUpImageScreen(Screen):
 	
 	open_animation = Animation( opacity = 1 , duration = pop_up_delay - 1)
 	close_animation = Animation(opacity = 0 , duration = pop_up_delay - 1)
+	
+	isDoneAllActivities : bool = BooleanProperty(False)
 	
 	def checkIfOpacity(self, num : int) -> bool : 
 		if num == 1:
@@ -119,8 +186,6 @@ class ShowPopUpImageScreen(Screen):
 		
 		Clock.schedule_once(self.animateMovingFlower , self.rotation_delay)
 		Clock.schedule_once(self.animatePopUpImages, self.pop_up_delay)
-		
-		
 		
 		
 	
@@ -243,8 +308,6 @@ class ShowILoveYouScreen(Screen):
 		Clock.schedule_once(self.checkIsDoneToNextPage, 1/30)
 	
 	
-		
-		
 # ======= Envelope Screen Activities
 class EnvelopeExitButton(MDBoxLayout):
 	command = ObjectProperty(None)
@@ -286,7 +349,10 @@ class ShowEnvelopeScreen(Screen):
 	
 	def on_leave(self, *args):
 		Animation(opacity = 0 ).start(self)
-	
+
+
+class CartonnyButton(ButtonBehavior , Image):
+	pass
 	
 class MainWindow(ScreenManager):
 	
@@ -294,6 +360,7 @@ class MainWindow(ScreenManager):
 	
 	def changeScreen(self, name : str):
 		self.switch_to(self.list_of_screens[name])
+		
 	
 	def on_kv_post(self , *args):
 		self.list_of_screens["i love you"] = ShowILoveYouScreen(name = "i love you")
@@ -301,12 +368,18 @@ class MainWindow(ScreenManager):
 		self.list_of_screens["love sound"] = ShowLoveSoundScreen(name = "love sond")
 		self.list_of_screens["timer year"] = ShowTimerYearScreen(name = "timer year")
 		self.list_of_screens["popup image"] = ShowPopUpImageScreen(name = "popup image")
+		self.list_of_screens["propose"] = ShowProposeScreen(name = "propose")
+		self.list_of_screens["flowering picture"] = ShowFloweringPictureScreen(name="flowering picture")
 		
-		self.switch_to(self.list_of_screens["popup image"])
+		self.switch_to(self.list_of_screens["flowering picture"])
+		#self.switch_to(self.list_of_screens["propose"])
+		#self.switch_to(self.list_of_screens["popup image"])
 		#self.switch_to(self.list_of_screens["timer year"])
 		#self.switch_to(self.list_of_screens["love sound"])
 		#self.switch_to(self.list_of_screens["envelope"])
 		#self.switch_to(self.list_of_screens["i love you"])
+
+
 
 
 class GiftApp(MDApp):
@@ -320,4 +393,6 @@ class GiftApp(MDApp):
 
 LabelBase.register(name = "title_font", fn_regular="fonts/Love Castle Demo.ttf")
 LabelBase.register(name="content_font", fn_regular="fonts/RomanticLove-Regular.ttf")
+LabelBase.register(name="reg_font", fn_regular="fonts/AbrilFatface-Regular.ttf")
+
 GiftApp().run()
