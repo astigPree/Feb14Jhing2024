@@ -22,7 +22,8 @@ import variables as data
 
 # ======= Flowering Picture Screen Activities
 class ShowFloweringPictureScreen(Screen):
-	pass
+	
+	isDoneAllActivities : bool = BooleanProperty(False)
 
 
 # ======= Prupose Screen Activities

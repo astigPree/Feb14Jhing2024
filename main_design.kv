@@ -484,8 +484,63 @@ MainWindow :
 <ShowFloweringPictureScreen>:
 	
 	FloatLayout :
-
+		
+		
+		
+		LyricsContainer:
+			size_hint : 0.75 , 0.55
+			pos_hint : { "center_x" : 0.5 , "center_y" : 0.6 }
+			
+			Image:
+				source : "Pictures/us.jpg"
+				allow_stretch : True
+				keep_ratio : False
+		
+		
+		PopUpImageWhiteFlowers:
+			size_hint : 0.85 , 0.2
+			pos_hint : { "center_x" : 0.55 , "center_y" : 0.87 }
+		
+		PopUpImageRedFlower:
+			allow_stretch : True
+			keep_ratio : False
+			size_hint : 0.3 , 0.3
+			pos_hint : { "center_x" : 0.17 , "center_y" : 0.86 }
+		
+		
+		PopUpImageWhiteFlowers:
+			size_hint : 0.85 , 0.2
+			pos_hint : { "center_x" : 0.4 , "center_y" : 0.33 }
+		
+		
+		PopUpImageRedFlower:
+			allow_stretch : True
+			keep_ratio : False
+			size_hint : 0.3 , 0.3
+			pos_hint : { "center_x" : 0.8 , "center_y" : 0.33 }
+		
+		
+		Label:
+			size_hint : 0.6 , 0.1
+			pos_hint : { "center_x" : 0.5 , "center_y" : 0.19 }
+			font_name : "reg_font"
+			font_size : min(self.size) * 0.3
+			text : "I Should Brought Some\nFlowers...."
+			color : "black"
+			halign : "center"
+		
+		CartonnyButton:
+			size_hint : 0.2 , 0.1
+			pos_hint : { "right" : 0.99 , "y" : 0.01 }
+			disabled : not root.isDoneAllActivities
+			opacity : 1 if root.isDoneAllActivities else 0
+			
+			on_release:
+				root.command()
 
 # ---------------------------> Flowering Picture Screen Additional Design
-
-
+<PopUpImageWhiteFlowers@Image>:
+	source : "Pictures/white flowers.png"
+	keep_ratio : False
+	allow_stretch : True
+	
