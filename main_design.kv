@@ -123,10 +123,12 @@ MainWindow :
 <ShowILoveYouScreen>:
 	
 	iloveyoubox : iloveyoubox
+	exit_button : exit_button
 	
 	FloatLayout:
 		
 		ILoveYouExitButton:
+			id : exit_button
 			size_hint : 0.8 , 0.07
 			pos_hint : { "center_x" : 0.5 , "y" : 0.02 }
 			
@@ -191,51 +193,6 @@ MainWindow :
 			root.command() if root.isOkeyToNext else None
 
 			
-# ---------------------------> Love Sound
-<ShowLoveSoundScreen>:
-	
-	lyrics_holder : lyrics_holder
-	content_holder : content_holder
-	
-	FloatLayout:
-		
-		LyricsContainer:
-			size_hint : 0.95 , 0.6
-			pos_hint : { "center_x" : 0.5 , "top" : 0.95 }
-			
-			ScrollView:
-				size_hint : 1 , 1
-				
-				MDGridLayout:
-					id : content_holder
-					adaptive_height : True
-					cols : 1
-					padding : [ dp(15), dp(0) , dp(15), dp(10)]
-					spacing : dp(20)
-					
-					LyricsContentLabel:
-						id : lyrics_holder
-					
-		
-
-# ---------------------------> I Love You Additional Design
-<LyricsContainer>:
-	elevation: 6
-    shadow_softness : 12
-    #shadow_offset: 0, 6
-    md_bg_color : chex("#EDEDED")
-    #height : root.height * 0.25
-	orientation : "vertical"
-	shadow_softness_size : 5
-
-<LyricsContentLabel@Label>:
-	size_hint : 1 , None
-	text_size: self.width, None
-	height: self.texture_size[1]
-	color : "black"
-	font_name : "content_font"
-
-
 # ---------------------------> Year Timer
 <ShowTimerYearScreen>:
 	
@@ -413,6 +370,7 @@ MainWindow :
 	yes_button : yes_button
 	no_button : no_button
 	result : result
+	exit_button : exit_button
 	
 	
 	FloatLayout:
@@ -464,6 +422,7 @@ MainWindow :
 			opacity : 0
 		
 		CartonnyButton:
+			id : exit_button
 			size_hint : 0.2 , 0.1
 			pos_hint : { "right" : 0.99 , "y" : 0.01 }
 			disabled : not root.isDoneAllActivities
@@ -482,12 +441,11 @@ MainWindow :
 
 # ---------------------------> Flowering Picture Screen
 <ShowFloweringPictureScreen>:
+
 	
 	FloatLayout :
 		
-		
-		
-		LyricsContainer:
+		PopUpImageImageBackground:
 			size_hint : 0.75 , 0.55
 			pos_hint : { "center_x" : 0.5 , "center_y" : 0.6 }
 			
@@ -521,11 +479,11 @@ MainWindow :
 		
 		
 		Label:
+			text : root.lyrics
 			size_hint : 0.6 , 0.1
 			pos_hint : { "center_x" : 0.5 , "center_y" : 0.19 }
 			font_name : "reg_font"
 			font_size : min(self.size) * 0.3
-			text : "I Should Brought Some\nFlowers...."
 			color : "black"
 			halign : "center"
 		
@@ -543,4 +501,12 @@ MainWindow :
 	source : "Pictures/white flowers.png"
 	keep_ratio : False
 	allow_stretch : True
-	
+
+<PopUpImageImageBackground>:
+	elevation: 6
+    shadow_softness : 12
+    #shadow_offset: 0, 6
+    md_bg_color : chex("#EDEDED")
+    #height : root.height * 0.25
+	orientation : "vertical"
+	shadow_softness_size : 5

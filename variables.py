@@ -21,15 +21,20 @@ list_of_heights : list[float, ...] = ListProperty([
 	])
 
 
-miss_miss_lyrics ="""
-Hinahanap ka na ng puso ko
-Baby ikaw lang talaga
-Ang nami-miss ko sa tuwi-tuwina
-Sa tuwi-twina
-At baby ako’y mag-aabang
-At dadalhin ka sa nakaraan
-Sa nakaraan
+miss_miss_lyrics ="""......
+,Hinahanap ka na ng puso ko
+,Baby ikaw lang talaga
+,Ang nami-miss ko\nsa tuwi-tuwina
+,.........
+,Sa tuwi-twina
+,...............
+,At baby ako’y mag-aabang
+,At dadalhin ka sa nakaraan
+,..........
+,Sa nakaraan*
 """
+
+miss_miss_lyrics_delay = 69
 
 
 list_of_images = list = ListProperty(["Pictures/flower.png" , "Pictures/images.jpeg" , "Pictures/gift box.png"])

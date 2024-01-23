@@ -21,9 +21,63 @@ import random
 import variables as data
 
 # ======= Flowering Picture Screen Activities
+class PopUpImageImageBackground(MDBoxLayout, CommonElevationBehavior, BackgroundColorBehavior):
+	pass
+	
 class ShowFloweringPictureScreen(Screen):
 	
+	lyrics : str = StringProperty("")
+	
 	isDoneAllActivities : bool = BooleanProperty(False)
+	
+	command : callable = ObjectProperty(None)
+	
+	sound : Sound = ObjectProperty(None)
+	
+	lyrics_text = data.miss_miss_lyrics
+	lyrics_time = data.miss_miss_lyrics_delay
+	
+	def displayMusic(self , *_):
+		
+		delay = self.lyrics_time / len(self.lyrics_text)
+		
+		def mainEvent(_):
+			text = self.lyrics_text[1]
+			
+			if text == "*":
+				return
+				
+			if text == ",":
+				self.lyrics = ""
+			else:
+				self.lyrics = self.lyrics + self.lyrics_text[1]
+				
+			self.lyrics_text = self.lyrics_text[1:]
+			Clock.schedule_once(mainEvent , delay)
+			
+		Clock.schedule_once(mainEvent , delay)
+			
+	
+	def on_enter(self , *args):
+		self.command = lambda : self.parent.changeScreen("timer year")
+		
+		def doneMusic(*args):
+			self.isDoneAllActivities = True
+					
+		self.sound = SoundLoader.load("Musics/miss miss cutted.mp3")
+		
+		def delayMusic(*args):
+			if self.sound:
+				self.sound.bind(on_stop = doneMusic)
+				Clock.schedule_once(self.displayMusic)
+				self.sound.play()
+				
+				
+		Clock.schedule_once(self.displayMusic , 3)
+		Clock.schedule_once(delayMusic , 3)
+		
+		
+	
 
 
 # ======= Prupose Screen Activities
@@ -44,6 +98,8 @@ class ShowProposeScreen(Screen):
 	location = ( (0.2 , 0.2) , (0.2 , 0.8) , (0.8 , 0.8) , (0.7 , 0.6) )
 	
 	anim = Animation(opacity = 0, duration = 1 , size_hint =(0,0))
+	
+	commad : callable = ObjectProperty(None)
 	
 	def actionIfYes(self):
 		self.yes_button.disabled = True
@@ -84,7 +140,7 @@ class ShowProposeScreen(Screen):
 	
 	def on_enter(self , *args):
 		Clock.schedule_once(self.animateMovement , self.delay)
-		
+		self.command = lambda : self.parent.changeScreen("flowering picture")
 
 # ======= Pop Up Image Screen Activities
 class PopUpImageOurPicture(MDBoxLayout,CommonElevationBehavior,BackgroundColorBehavior):
@@ -133,6 +189,10 @@ class ShowPopUpImageScreen(Screen):
 	close_animation = Animation(opacity = 0 , duration = pop_up_delay - 1)
 	
 	isDoneAllActivities : bool = BooleanProperty(False)
+	
+	sound : Sound = ObjectProperty(None)
+	
+	command : callable = ObjectProperty(None)
 	
 	def checkIfOpacity(self, num : int) -> bool : 
 		if num == 1:
@@ -188,7 +248,21 @@ class ShowPopUpImageScreen(Screen):
 		Clock.schedule_once(self.animateMovingFlower , self.rotation_delay)
 		Clock.schedule_once(self.animatePopUpImages, self.pop_up_delay)
 		
+		self.sound = SoundLoader.load("Musics/Bruno_Mar Music.mp3")
 		
+		def delayMusic(*args):
+			if self.sound:
+				self.sound.play()
+				def doneMusic(*args):
+					self.isDoneAllActivities = True
+				
+				self.sound.bind(on_stop = doneMusic)
+		
+		Clock.schedule_once(delayMusic , 3)
+		
+		self.command = lambda : self.parent.changeScreen("propose")
+	
+	
 	
 # ======= Timer Year Screen Activities
 class ShowTimerYearScreen(Screen):
@@ -225,44 +299,6 @@ class ShowTimerYearScreen(Screen):
 		Clock.schedule_once(delay , 1)
 		Clock.schedule_once(self.withYouAnimation , 1/30)
 
-
-# ======= Songs Screen Activities
-class LyricsContainer(MDBoxLayout,CommonElevationBehavior,BackgroundColorBehavior):
-	pass
-
-class ShowLoveSoundScreen(Screen):
-	
-	sound : Sound= ObjectProperty(None)
-	video : Video = ObjectProperty(None)
-	
-	content_holder : MDBoxLayout = ObjectProperty(None)
-	
-	lyrics : str = data.miss_miss_lyrics
-	lyrics_holder : Label = ObjectProperty(None)
-	song_duration = 20
-	
-	def animateText(self , interval : float):
-		if not self.lyrics:
-			return 
-		
-		print(self.sound.state)
-		print(f"current sound pos : {self.sound.get_pos()} and word {self.lyrics[0]}")
-		self.lyrics_holder.text = self.lyrics_holder.text + self.lyrics[0]
-		self.lyrics = self.lyrics[1:]
-		Clock.schedule_once(self.animateText , interval)
-		
-	def on_enter(self , *args):
-		self.sound = SoundLoader.load("Musics/miss miss cutted.mp3")
-		if self.sound:
-			self.sound.play()
-
-		def delayMusic(interval : float):
-			interval = self.song_duration / len(self.lyrics)
-			Clock.schedule_once(self.animateText , interval)
-		
-		Clock.schedule_once(delayMusic , 2.7)
-		
-
 # ======= I Love You Screen Activities
 class  ILoveYouExitButton(MDBoxLayout):
 	command : callable = ObjectProperty()
@@ -273,6 +309,7 @@ class ILoveYouBox(MDBoxLayout):
 
 class ShowILoveYouScreen(Screen):
 	iloveyoubox : ILoveYouBox = ObjectProperty(None)
+	exit_button : ILoveYouExitButton = ObjectProperty(None)
 	
 	maximum_height = data.maximum_height
 	
@@ -291,12 +328,20 @@ class ShowILoveYouScreen(Screen):
 	
 	def checkIsDoneToNextPage(self, interval : float):
 		if self.ids["header"].opacity and self.ids["footer"].opacity:
-			Animation(size_hint_y= 0 , duration= 3).start(self.ids["cover"])
+			anim = Animation(size_hint_y= 0 , duration= 3)
+			anim.start(self.ids["cover"])
+			
+			def animation(*args):
+				self.exit_button.isOkeyToNext = True
+			
+			anim.bind(on_complete = animation)
+			
 			return 
 		Clock.schedule_once(self.checkIsDoneToNextPage, 1/30)
-	
+		
 	def on_enter(self , *args):
 		animation : Animation = None
+		self.exit_button.command = lambda : self.parent.changeScreen("popup image")
 		#self.iloveyoubox.size_hint_y = 0.3
 		for hint_y , duration in self.list_of_heights:
 			if animation:
@@ -364,9 +409,8 @@ class MainWindow(ScreenManager):
 		
 	
 	def on_kv_post(self , *args):
-		self.list_of_screens["i love you"] = ShowILoveYouScreen(name = "i love you")
 		self.list_of_screens["envelope"] = ShowEnvelopeScreen(name = "envelope")
-		self.list_of_screens["love sound"] = ShowLoveSoundScreen(name = "love sond")
+		self.list_of_screens["i love you"] = ShowILoveYouScreen(name = "i love you")
 		self.list_of_screens["timer year"] = ShowTimerYearScreen(name = "timer year")
 		self.list_of_screens["popup image"] = ShowPopUpImageScreen(name = "popup image")
 		self.list_of_screens["propose"] = ShowProposeScreen(name = "propose")
@@ -377,9 +421,9 @@ class MainWindow(ScreenManager):
 		#self.switch_to(self.list_of_screens["popup image"])
 		#self.switch_to(self.list_of_screens["timer year"])
 		#self.switch_to(self.list_of_screens["love sound"])
-		#self.switch_to(self.list_of_screens["envelope"])
 		#self.switch_to(self.list_of_screens["i love you"])
-
+		#self.switch_to(self.list_of_screens["envelope"])
+		
 
 
 
