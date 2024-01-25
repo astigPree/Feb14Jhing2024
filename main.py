@@ -16,7 +16,7 @@ from kivy.clock import Clock
 from kivy.core.audio import SoundLoader, Sound
 from kivy.core.video import VideoBase, Video
 
-import random
+import random, math
 
 import variables as data
 
@@ -77,9 +77,6 @@ class ShowFloweringPictureScreen(Screen):
 		Clock.schedule_once(delayMusic , 3)
 		
 		
-	
-
-
 # ======= Prupose Screen Activities
 class PruposeAnswerButton(ButtonBehavior, Image):
 	pass
@@ -317,6 +314,8 @@ class ShowILoveYouScreen(Screen):
 	
 	list_of_heights = data.list_of_heights
 	
+	sound : Sound = ObjectProperty(None)
+	
 	
 	def checkIsDoneAnimating(self , interval : int) :
 		if self.iloveyoubox.size_hint_y == self.maximum_height:
@@ -342,12 +341,18 @@ class ShowILoveYouScreen(Screen):
 	def on_enter(self , *args):
 		animation : Animation = None
 		self.exit_button.command = lambda : self.parent.changeScreen("popup image")
-		#self.iloveyoubox.size_hint_y = 0.3
+		self.sound = SoundLoader.load("Musics/heart beat love.mp3")
+		
+		def activity(*args):
+			if self.sound:
+				self.sound.play()	
+				
 		for hint_y , duration in self.list_of_heights:
 			if animation:
 				animation = animation + Animation(size_hint_y = hint_y , duration=duration )
 			else:
 				animation = Animation(size_hint_y = hint_y , duration=duration)
+		animation.bind( on_start = activity)
 		animation.start(self.iloveyoubox)
 		
 		Clock.schedule_once(self.checkIsDoneAnimating, 1/30)
@@ -369,7 +374,8 @@ class ShowEnvelopeScreen(Screen):
 	content_holder : Label = ObjectProperty(None)
 	content_layout : Widget = ObjectProperty(None)
 	
-	duration : float = NumericProperty(1.0)
+	duration : float = NumericProperty(1)
+	text_duration : int = 60
 	
 	isOpen : bool = BooleanProperty(False)
 	
@@ -384,13 +390,13 @@ class ShowEnvelopeScreen(Screen):
 			return 
 		self.content_holder.text = self.content_holder.text + self.content[0]
 		self.content = self.content[1:]
-		Clock.schedule_once(self.animateText , interval)
+		Clock.schedule_once(self.animateText , math.floor(interval))
 	
 	def animate(self):
 		self.isOpen = True
 		Animation(size_hint_y = self.maximum_height, duration = self.duration).start(self.envelope_box)
 		
-		speed = (self.duration * 2) / len(self.content)
+		speed = self.text_duration  / len(self.content)
 		Clock.schedule_once(self.animateText, speed)
 	
 	def on_leave(self, *args):
@@ -416,23 +422,12 @@ class MainWindow(ScreenManager):
 		self.list_of_screens["propose"] = ShowProposeScreen(name = "propose")
 		self.list_of_screens["flowering picture"] = ShowFloweringPictureScreen(name="flowering picture")
 		
-		self.switch_to(self.list_of_screens["flowering picture"])
-		#self.switch_to(self.list_of_screens["propose"])
-		#self.switch_to(self.list_of_screens["popup image"])
-		#self.switch_to(self.list_of_screens["timer year"])
-		#self.switch_to(self.list_of_screens["love sound"])
-		#self.switch_to(self.list_of_screens["i love you"])
-		#self.switch_to(self.list_of_screens["envelope"])
+		self.switch_to(self.list_of_screens["envelope"])
 		
-
-
 
 class GiftApp(MDApp):
 	
 	def build(self):
-		#current_icon_font = self.theme_cls.i
-#		print(f"Current Icon Font: {current_icon_font}")
-#		self.theme_cls.icon_font = "mdi"
 		return Builder.load_file("main_design.kv")
 		
 
