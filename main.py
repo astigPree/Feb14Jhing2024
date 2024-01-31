@@ -71,10 +71,11 @@ class ShowFloweringPictureScreen(Screen):
 				self.sound.bind(on_stop = doneMusic)
 				Clock.schedule_once(self.displayMusic)
 				self.sound.play()
+		
+		delay = 0.5
 				
-				
-		Clock.schedule_once(self.displayMusic , 3)
-		Clock.schedule_once(delayMusic , 3)
+		Clock.schedule_once(self.displayMusic , delay)
+		Clock.schedule_once(delayMusic , delay)
 		
 		
 # ======= Prupose Screen Activities
@@ -265,7 +266,7 @@ class ShowPopUpImageScreen(Screen):
 				
 				self.sound.bind(on_stop = doneMusic)
 		
-		Clock.schedule_once(delayMusic , 3)
+		Clock.schedule_once(delayMusic , self.pop_up_delay)
 		
 		self.flowering_clock = Clock.schedule_once(self.animateMovingFlower , self.rotation_delay)
 		self.event_clock = Clock.schedule_once(self.animatePopUpImages, self.pop_up_delay)
