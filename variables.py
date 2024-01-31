@@ -52,4 +52,10 @@ miss_miss_lyrics ="""......
 miss_miss_lyrics_delay = 69
 
 
-list_of_images = list = ListProperty(["Pictures/flower.png" , "Pictures/images.jpeg" , "Pictures/gift box.png"])
+list_of_images : list = ListProperty(
+	["Pictures/pic 1.jpg" , 
+	"Pictures/pic 2.jpg" , 
+	"Pictures/pic 3.jpg",
+	"Pictures/pic 4.jpg",
+	"Pictures/pic 5.jpg"
+	])

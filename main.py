@@ -92,11 +92,14 @@ class ShowProposeScreen(Screen):
 	isMoveUp = False
 	delay = 0.5
 	
+	music : Sound = ObjectProperty(None)
+	
 	location = ( (0.2 , 0.2) , (0.2 , 0.8) , (0.8 , 0.8) , (0.7 , 0.6) )
 	
 	anim = Animation(opacity = 0, duration = 1 , size_hint =(0,0))
 	
 	commad : callable = ObjectProperty(None)
+	event_clock : Clock = ObjectProperty()
 	
 	def actionIfYes(self):
 		self.yes_button.disabled = True
@@ -108,11 +111,15 @@ class ShowProposeScreen(Screen):
 		
 		def done(*_):
 			self.isDoneAllActivities = True
+		
+		def processing(*_):
+			if self.music:
+				self.music.play()
 			
 		anim = Animation(opacity = 1 , size_hint = (0.8 , 0.4), duration = 3 )
+		anim.bind(on_complete = done , on_start = processing )
 		anim.start(self.result)
-		anim.bind(on_complete = done )
-	
+		
 	def moveIfNo(self):
 		past_loc = ( self.no_button.pos_hint["center_x"], self.no_button.pos_hint["center_y"])
 		while True:
@@ -133,11 +140,16 @@ class ShowProposeScreen(Screen):
 			self.yes_button.pos_hint = {   "center_x" : 0.39,  "center_y" : self.yes_button.pos_hint["center_y"] - 0.01 }
 			self.isMoveUp = True
 		
-		Clock.schedule_once(self.animateMovement , self.delay)
+		self.event_clock = Clock.schedule_once(self.animateMovement , self.delay)
 	
 	def on_enter(self , *args):
-		Clock.schedule_once(self.animateMovement , self.delay)
+		self.event_clock = Clock.schedule_once(self.animateMovement , self.delay)
 		self.command = lambda : self.parent.changeScreen("flowering picture")
+		self.music = SoundLoader.load("Musics/labyu too .mp3")
+	
+	def on_leave(self , *args):
+		Clock.unschedule(self.event_clock)
+	
 
 # ======= Pop Up Image Screen Activities
 class PopUpImageOurPicture(MDBoxLayout,CommonElevationBehavior,BackgroundColorBehavior):
@@ -191,6 +203,9 @@ class ShowPopUpImageScreen(Screen):
 	
 	command : callable = ObjectProperty(None)
 	
+	event_clock : Clock = ObjectProperty()
+	flowering_clock : Clock = ObjectProperty()
+	
 	def checkIfOpacity(self, num : int) -> bool : 
 		if num == 1:
 			return self.f_pic.opacity
@@ -199,7 +214,6 @@ class ShowPopUpImageScreen(Screen):
 		else:
 			return self.t_pic.opacity
 			
-	
 	def selectionOfImages(self, anim : Animation , num : int , image : str):
 		if num == 1:
 			selected_image = self.f_pic
@@ -211,7 +225,6 @@ class ShowPopUpImageScreen(Screen):
 		if image:
 			selected_image.my_image.source = image
 		anim.start(selected_image)
-		
 	
 	def animatePopUpImages(self , interval : float):
 		what_to_open = random.randint(1 , 3)
@@ -221,10 +234,10 @@ class ShowPopUpImageScreen(Screen):
 		if not self.checkIfOpacity(what_to_open):
 			self.selectionOfImages(self.open_animation , what_to_open , self.images[what_image])	
 		if what_to_close == what_to_open:
-			Clock.schedule_once(self.animatePopUpImages, self.pop_up_delay)
+			self.event_clock =  Clock.schedule_once(self.animatePopUpImages, self.pop_up_delay)
 			return 
 		self.selectionOfImages(self.close_animation, what_to_close, None)
-		Clock.schedule_once(self.animatePopUpImages , self.pop_up_delay)
+		self.event_clock = Clock.schedule_once(self.animatePopUpImages , self.pop_up_delay)
 		
 	def animateMovingFlower(self , interval : float):
 		self.f1.increment()
@@ -236,14 +249,11 @@ class ShowPopUpImageScreen(Screen):
 		self.f4.increment()
 		self.f4.decrement()
 		
-		Clock.schedule_once(self.animateMovingFlower , self.rotation_delay)
+		self.flowering_clock = Clock.schedule_once(self.animateMovingFlower , self.rotation_delay)
 	
 	def on_enter(self , *args):
 		self.f1.currentAngle = 180
 		self.f3.currentAngle = 180
-		
-		Clock.schedule_once(self.animateMovingFlower , self.rotation_delay)
-		Clock.schedule_once(self.animatePopUpImages, self.pop_up_delay)
 		
 		self.sound = SoundLoader.load("Musics/Bruno_Mar Music.mp3")
 		
@@ -257,9 +267,14 @@ class ShowPopUpImageScreen(Screen):
 		
 		Clock.schedule_once(delayMusic , 3)
 		
+		self.flowering_clock = Clock.schedule_once(self.animateMovingFlower , self.rotation_delay)
+		self.event_clock = Clock.schedule_once(self.animatePopUpImages, self.pop_up_delay)
+		
 		self.command = lambda : self.parent.changeScreen("propose")
 	
-	
+	def on_leave(self , *args):
+		Clock.unschedule(self.flowering_clock)
+		Clock.unschedule(self.event_clock)
 	
 # ======= Timer Year Screen Activities
 class ShowTimerYearScreen(Screen):
@@ -270,16 +285,25 @@ class ShowTimerYearScreen(Screen):
 	
 	duration : int = NumericProperty(1.5)
 	
+	sound : Sound = ObjectProperty(None)
+	
 	def withYouAnimation(self , interval : int):
 		if self.numer_4.opacity >= 0.65 :
 			anim = Animation( pos_hint = {"top":0.85} , duration = 1 )
 			anim.start(self.with_you)
 			anim = Animation(opacity= 1 , duration = 1.5 )
+			anim.bind(on_start = self.activity)
 			anim.start(self.labyu)
 			return 
 		Clock.schedule_once(self.withYouAnimation , 1/30)
 	
+	def activity(self , *args):
+		if self.sound:
+			self.sound.play()
+				
 	def on_enter(self , *args):
+		self.sound = SoundLoader.load("Musics/Crowd_Cheering.mp3")
+		
 		def delay(_):
 			anim_3 = Animation(
 				opacity = 0,
@@ -291,7 +315,6 @@ class ShowTimerYearScreen(Screen):
 				opacity = 1 , pos_hint ={ "center_x" : 0.5 } ,
 			 	duration = self.duration)
 			anim_4.start(self.numer_4)
-		
 		
 		Clock.schedule_once(delay , 1)
 		Clock.schedule_once(self.withYouAnimation , 1/30)
@@ -413,7 +436,6 @@ class MainWindow(ScreenManager):
 	def changeScreen(self, name : str):
 		self.switch_to(self.list_of_screens[name])
 		
-	
 	def on_kv_post(self , *args):
 		self.list_of_screens["envelope"] = ShowEnvelopeScreen(name = "envelope")
 		self.list_of_screens["i love you"] = ShowILoveYouScreen(name = "i love you")
