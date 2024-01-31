@@ -21,6 +21,51 @@ MainWindow :
 	on_release:
 		print("ARROW")
 
+<LoadingPage>:
+	loading_cunsor : loading_cunsor
+	
+	BoxLayout:
+		size_hint : 0.85 , 0.3
+		pos_hint : { "center_x" : 0.5 , "center_y" : 0.5 }
+		orientation: "vertical"
+		
+		BoxLayout:
+			size_hint : 1 , 0.9
+			LoadingPageLabel:
+				opacity : 1 if root.loading_num >= 0 else 0
+				text : "J"
+			
+			LoadingPageLabel:
+				opacity : 1 if root.loading_num >= 1 else 0
+				text : "H"
+				
+			LoadingPageLabel:
+				opacity : 1 if root.loading_num >= 2 else 0
+				text : "I"
+				
+			LoadingPageLabel:
+				opacity : 1 if root.loading_num >= 3 else 0
+				text : "N"
+				
+			LoadingPageLabel:
+				opacity : 1 if root.loading_num >= 4 else 0
+				text : "G"
+		
+		BoxLayout:
+			size_hint : 1 , 0.1
+			
+			MDBoxLayout:
+				id : loading_cunsor
+				md_bg_color : "black"
+				size_hint : 0 , 1
+				radius: (16,)
+				
+			
+<LoadingPageLabel@Label>:
+	color : "black"
+	font_name : "content_font"
+	font_size : min(self.size) * 0.95
+
 # ---------------------------> Envelope
 <ShowEnvelopeScreen>:
 	envelope_box : envelope_box

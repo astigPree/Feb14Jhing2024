@@ -8,13 +8,12 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.behaviors import ButtonBehavior
 
-from kivy.properties import ListProperty, DictProperty, NumericProperty, ObjectProperty, BooleanProperty, StringProperty
+from kivy.properties import  DictProperty, NumericProperty, ObjectProperty, BooleanProperty, StringProperty
 from kivy.animation import Animation
 from kivy.lang.builder import Builder
 from kivy.core.text import LabelBase
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader, Sound
-from kivy.core.video import VideoBase, Video
 
 import random, math
 
@@ -425,7 +424,38 @@ class ShowEnvelopeScreen(Screen):
 	def on_leave(self, *args):
 		Animation(opacity = 0 ).start(self)
 
-
+# LOADING PAGE
+class LoadingPage(Screen):
+	
+	main_event : Clock = ObjectProperty(None)
+	loading_num : int = NumericProperty(0)
+	loading_cunsor : Widget = ObjectProperty()
+	
+	def on_enter(self , *args):
+		Clock.schedule_once(self.parent.loadAllScreen, 1)
+		
+	def checkIfDoneLoading(self ):
+		self.loading_num += 1
+		
+		if self.loading_num == 6:
+			self.loading_num += 1
+			Clock.schedule_once(self.parent.gotoFirstScreen, 1 )
+		
+		if self.loading_num ==1:
+			self.loading_cunsor.size_hint_x = 0.20
+		elif self.loading_num ==2:
+			self.loading_cunsor.size_hint_x = 0.40
+		elif self.loading_num ==3:
+			self.loading_cunsor.size_hint_x = 0.60
+		elif self.loading_num ==4:
+			self.loading_cunsor.size_hint_x = 0.80
+		elif self.loading_num ==5:
+			self.loading_cunsor.size_hint_x = 1
+		else:
+			pass
+		
+	
+	
 class CartonnyButton(ButtonBehavior , Image):
 	pass
 	
@@ -434,17 +464,30 @@ class MainWindow(ScreenManager):
 	list_of_screens : dict = DictProperty({})
 	
 	def changeScreen(self, name : str):
+		past_screen = self.current_screen
 		self.switch_to(self.list_of_screens[name])
+		self.remove_widget(past_screen)
 		
 	def on_kv_post(self , *args):
-		self.list_of_screens["envelope"] = ShowEnvelopeScreen(name = "envelope")
-		self.list_of_screens["i love you"] = ShowILoveYouScreen(name = "i love you")
-		self.list_of_screens["timer year"] = ShowTimerYearScreen(name = "timer year")
-		self.list_of_screens["popup image"] = ShowPopUpImageScreen(name = "popup image")
-		self.list_of_screens["propose"] = ShowProposeScreen(name = "propose")
-		self.list_of_screens["flowering picture"] = ShowFloweringPictureScreen(name="flowering picture")
+		self.list_of_screens["loading"] = LoadingPage(name="loading")
+		self.switch_to(self.list_of_screens["loading"])
+	
+	def gotoFirstScreen(self, *args):
+		self.changeScreen("envelope")
 		
-		self.switch_to(self.list_of_screens["envelope"])
+	def loadAllScreen(self , *args):
+		self.list_of_screens["envelope"] = ShowEnvelopeScreen(name = "envelope")
+		self.current_screen.checkIfDoneLoading()
+		self.list_of_screens["i love you"] = ShowILoveYouScreen(name = "i love you")
+		self.current_screen.checkIfDoneLoading()
+		self.list_of_screens["timer year"] = ShowTimerYearScreen(name = "timer year")
+		self.current_screen.checkIfDoneLoading()
+		self.list_of_screens["popup image"] = ShowPopUpImageScreen(name = "popup image")
+		self.current_screen.checkIfDoneLoading()
+		self.list_of_screens["propose"] = ShowProposeScreen(name = "propose")
+		self.current_screen.checkIfDoneLoading()
+		self.list_of_screens["flowering picture"] = ShowFloweringPictureScreen(name="flowering picture")
+		self.current_screen.checkIfDoneLoading()
 		
 
 class GiftApp(MDApp):
