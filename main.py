@@ -36,6 +36,9 @@ class ShowFloweringPictureScreen(Screen):
 	lyrics_text = data.miss_miss_lyrics
 	lyrics_time = data.miss_miss_lyrics_delay
 	
+	def on_kv_post(self , *args):
+		self.sound = SoundLoader.load("Musics/miss miss cutted.mp3")
+	
 	def displayMusic(self , *_):
 		
 		delay = self.lyrics_time / len(self.lyrics_text)
@@ -63,8 +66,6 @@ class ShowFloweringPictureScreen(Screen):
 		def doneMusic(*args):
 			self.isDoneAllActivities = True
 					
-		self.sound = SoundLoader.load("Musics/miss miss cutted.mp3")
-		
 		def delayMusic(*args):
 			if self.sound:
 				self.sound.bind(on_stop = doneMusic)
@@ -99,6 +100,9 @@ class ShowProposeScreen(Screen):
 	
 	commad : callable = ObjectProperty(None)
 	event_clock : Clock = ObjectProperty()
+	
+	def on_kv_post(self, *args):
+		self.music = SoundLoader.load("Musics/labyu too .mp3")
 	
 	def actionIfYes(self):
 		self.yes_button.disabled = True
@@ -144,8 +148,7 @@ class ShowProposeScreen(Screen):
 	def on_enter(self , *args):
 		self.event_clock = Clock.schedule_once(self.animateMovement , self.delay)
 		self.command = lambda : self.parent.changeScreen("flowering picture")
-		self.music = SoundLoader.load("Musics/labyu too .mp3")
-	
+		
 	def on_leave(self , *args):
 		Clock.unschedule(self.event_clock)
 	
@@ -254,8 +257,6 @@ class ShowPopUpImageScreen(Screen):
 		self.f1.currentAngle = 180
 		self.f3.currentAngle = 180
 		
-		self.sound = SoundLoader.load("Musics/Bruno_Mar Music.mp3")
-		
 		def delayMusic(*args):
 			if self.sound:
 				self.sound.play()
@@ -270,6 +271,9 @@ class ShowPopUpImageScreen(Screen):
 		self.event_clock = Clock.schedule_once(self.animatePopUpImages, self.pop_up_delay)
 		
 		self.command = lambda : self.parent.changeScreen("propose")
+	
+	def on_kv_post(self , *args):
+		self.sound = SoundLoader.load("Musics/Bruno_Mar Music.mp3")
 	
 	def on_leave(self , *args):
 		Clock.unschedule(self.flowering_clock)
@@ -299,9 +303,12 @@ class ShowTimerYearScreen(Screen):
 	def activity(self , *args):
 		if self.sound:
 			self.sound.play()
+			
+	def on_kv_post(self , *args):
+		self.sound = SoundLoader.load("Musics/Crowd_Cheering.mp3")
+		
 				
 	def on_enter(self , *args):
-		self.sound = SoundLoader.load("Musics/Crowd_Cheering.mp3")
 		
 		def delay(_):
 			anim_3 = Animation(
@@ -359,11 +366,13 @@ class ShowILoveYouScreen(Screen):
 			
 			return 
 		Clock.schedule_once(self.checkIsDoneToNextPage, 1/30)
-		
+	
+	def on_kv_post(self , *args):
+		self.sound = SoundLoader.load("Musics/heart beat love.mp3")
+	
 	def on_enter(self , *args):
 		animation : Animation = None
 		self.exit_button.command = lambda : self.parent.changeScreen("popup image")
-		self.sound = SoundLoader.load("Musics/heart beat love.mp3")
 		
 		def activity(*args):
 			if self.sound:
