@@ -15,7 +15,7 @@ from kivy.core.text import LabelBase
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader, Sound
 
-import random, math
+import random, math, os
 
 import variables as data
 
@@ -37,7 +37,7 @@ class ShowFloweringPictureScreen(Screen):
 	lyrics_time = data.miss_miss_lyrics_delay
 	
 	def on_kv_post(self , *args):
-		self.sound = SoundLoader.load("Musics/miss miss cutted.mp3")
+		self.sound = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Musics', 'miss miss cutted.mp3'))
 	
 	def displayMusic(self , *_):
 		
@@ -103,7 +103,7 @@ class ShowProposeScreen(Screen):
 	event_clock : Clock = ObjectProperty()
 	
 	def on_kv_post(self, *args):
-		self.music = SoundLoader.load("Musics/labyu too .mp3")
+		self.music = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Musics', 'labyu too .mp3'))
 	
 	def actionIfYes(self):
 		self.yes_button.disabled = True
@@ -226,7 +226,7 @@ class ShowPopUpImageScreen(Screen):
 			selected_image = self.t_pic
 		
 		if image:
-			selected_image.my_image.source = image
+			selected_image.my_image.source = os.path.join(os.path.dirname(__file__), 'Pictures', image)
 		anim.start(selected_image)
 	
 	def animatePopUpImages(self , interval : float):
@@ -274,7 +274,7 @@ class ShowPopUpImageScreen(Screen):
 		self.command = lambda : self.parent.changeScreen("propose")
 	
 	def on_kv_post(self , *args):
-		self.sound = SoundLoader.load("Musics/Bruno_Mar Music.mp3")
+		self.sound = SoundLoader.load("Musics\Bruno_Mar Music.mp3")
 	
 	def on_leave(self , *args):
 		Clock.unschedule(self.flowering_clock)
@@ -306,8 +306,7 @@ class ShowTimerYearScreen(Screen):
 			self.sound.play()
 			
 	def on_kv_post(self , *args):
-		self.sound = SoundLoader.load("Musics/Crowd_Cheering.mp3")
-		
+		self.sound = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Musics', 'Crowd_Cheering.mp3'))
 				
 	def on_enter(self , *args):
 		
@@ -369,7 +368,7 @@ class ShowILoveYouScreen(Screen):
 		Clock.schedule_once(self.checkIsDoneToNextPage, 1/30)
 	
 	def on_kv_post(self , *args):
-		self.sound = SoundLoader.load("Musics/heart beat love.mp3")
+		self.sound = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Musics', 'heart beat love.mp3'))
 	
 	def on_enter(self , *args):
 		animation : Animation = None
@@ -407,7 +406,7 @@ class ShowEnvelopeScreen(Screen):
 	content_layout : Widget = ObjectProperty(None)
 	
 	duration : float = NumericProperty(1)
-	text_duration : int = 60
+	text_duration : int = 3 # 60
 	
 	isOpen : bool = BooleanProperty(False)
 	

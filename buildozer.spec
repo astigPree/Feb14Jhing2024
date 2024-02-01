@@ -17,7 +17,7 @@ package.domain = org.astigpree.oc
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,ogg,mp3
+source.include_exts = py,png,jpg,kv,atlas,ogg,mp3,ttf
 
 # (list) List of inclusions using pattern matching
 source.include_patterns = data/*.png, sound/*.ogg
@@ -50,8 +50,8 @@ requirements = python3,kivy==2.1.0,kivymd==1.1.1,ffpyplayer
 #garden_requirements =
 
 # (str) Presplash of the application
-#presplash.filename = splash.png
-android.presplash_color = #000000
+presplash.filename = icon.png
+android.presplash_color = #F48FB1
 
 # (str) Icon of the application
 icon.filename = icon.png
