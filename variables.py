@@ -1,3 +1,8 @@
+from PIL import Image
+import os
+
+
+
 from kivy.properties import ListProperty
 
 content = """
@@ -61,3 +66,5 @@ list_of_images : list = ListProperty(
 	"pic 4.jpg",
 	"pic 5.jpg"
 	])
+
+
