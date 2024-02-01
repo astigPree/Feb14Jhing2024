@@ -37,7 +37,7 @@ class ShowFloweringPictureScreen(Screen):
 	lyrics_time = data.miss_miss_lyrics_delay
 	
 	def on_kv_post(self , *args):
-		self.sound = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Musics', 'miss miss cutted.mp3'))
+		self.sound = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Music', 'miss_miss_cutted.mp3'))
 	
 	def displayMusic(self , *_):
 		
@@ -103,7 +103,7 @@ class ShowProposeScreen(Screen):
 	event_clock : Clock = ObjectProperty()
 	
 	def on_kv_post(self, *args):
-		self.music = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Musics', 'labyu too .mp3'))
+		self.music = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Music', 'labyu_too.mp3'))
 	
 	def actionIfYes(self):
 		self.yes_button.disabled = True
@@ -274,7 +274,11 @@ class ShowPopUpImageScreen(Screen):
 		self.command = lambda : self.parent.changeScreen("propose")
 	
 	def on_kv_post(self , *args):
-		self.sound = SoundLoader.load("Musics\Bruno_Mar Music.mp3")
+		path = os.path.join(os.path.dirname(__file__), 'Music', 'Bruno_Mar_Music.mp3')
+		if os.path.exists(path):
+			self.sound = SoundLoader.load(path)
+		else:
+			print("Does not exist")
 	
 	def on_leave(self , *args):
 		Clock.unschedule(self.flowering_clock)
@@ -306,7 +310,7 @@ class ShowTimerYearScreen(Screen):
 			self.sound.play()
 			
 	def on_kv_post(self , *args):
-		self.sound = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Musics', 'Crowd_Cheering.mp3'))
+		self.sound = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Music', 'Crowd_Cheering.mp3'))
 				
 	def on_enter(self , *args):
 		
@@ -368,7 +372,7 @@ class ShowILoveYouScreen(Screen):
 		Clock.schedule_once(self.checkIsDoneToNextPage, 1/30)
 	
 	def on_kv_post(self , *args):
-		self.sound = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Musics', 'heart beat love.mp3'))
+		self.sound = SoundLoader.load(os.path.join(os.path.dirname(__file__), 'Music', 'heart_beat_love.mp3'))
 	
 	def on_enter(self , *args):
 		animation : Animation = None

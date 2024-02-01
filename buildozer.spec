@@ -17,7 +17,7 @@ package.domain = org.astigpree.oc
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,ogg,mp3,ttf
+source.include_exts = py,png,jpg,kv,atlas,mp3,ttf
 
 # (list) List of inclusions using pattern matching
 source.include_patterns = data/*.png, sound/*.ogg
